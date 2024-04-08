@@ -1,0 +1,9 @@
+function [zI,zQ,A,tau] = receiver(y)
+
+% Receiver function
+
+zI  = y;
+zQ  = y;
+A   = 1;
+tau = 1;
+
