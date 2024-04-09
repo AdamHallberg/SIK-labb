@@ -1,4 +1,4 @@
-function [x] = sender1(xI, xQ)
+function [x] = sender(xI, xQ)
 %% Define constants
 L  = length(xI);                % Antal punkter i indatan
 fs = 20e3;                      % Samplingsfrekvens
@@ -29,8 +29,8 @@ f0 = 1/M;                       % Normerad frekvens
                                 % Nyquist frequency (half the sampling frequency).
 
 % Filter signals                
-yI = filter(b,a,xI2);           % Filtrera xI2
-yQ = filter(b,a,xQ2);           % Filtrera xQ2
+%yI = filter(b,a,xI2);           % Filtrera xI2
+%yQ = filter(b,a,xQ2);           % Filtrera xQ2
 
 yI2= filter(b,a,[xI2;zeros(N/2,1)]);
 yI2= yI2(N/2+1:max(size(yI2))); % Remove first N/2 points since filter adds delay
@@ -42,8 +42,8 @@ fc=150e3;                       % Bärfrekvensen
 carrierI=cos(2*pi*fc*t2).';     % I carrier
 carrierQ=-sin(2*pi*fc*t2).';    % Q carrier
 
-zI=yI2.*carrierI;
-zQ=yQ2.*carrierQ;
+zI=M*yI2.*carrierI;
+zQ=M*yQ2.*carrierQ;
 
 %% Done
 x = zI + zQ;                    %  I/Q modulation done
