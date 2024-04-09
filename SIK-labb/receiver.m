@@ -6,17 +6,15 @@ T  = 1/fs;                      % Periodtid
 T0 = 1/20000;
 %%  Determine A and tau
 Length = 20*100000;
-tc = T0*[0:Length-1];
+tc = T*[0:Length-1];
 
-known_chirp = chirp(tc,140e3,Length,160e3)';
+known_chirp = chirp(tc,140e3,Length,160e3)';  % samma som i sender
 
 known_chirp = [known_chirp;zeros(length(y)-length(known_chirp),1)];
-size(known_chirp)
-size(y)
 
 [~, i0] = max(xcorr(known_chirp))            % Gives index for peak in known chirp 
 
-[~, i1] = max(xcorr(known_chirp, y))            % Gives index for peak in known chirp
+[~, i1] = max(xcorr(y, known_chirp))            % Gives index for peak in known chirp
 
 added_samples = abs(i1-i0)
 tau = T*added_samples;
