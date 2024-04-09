@@ -45,6 +45,9 @@ carrierQ=-sin(2*pi*fc*t2).';    % Q carrier
 zI=M*yI2.*carrierI;
 zQ=M*yQ2.*carrierQ;
 
-%% Done
 x = zI + zQ;                    %  I/Q modulation done
+%%  Create chirp
+known_chirp = chirp(t2,140e3,L2,160e3)';
+%%  Add known chirp to signal
+x = [known_chirp; x];
 end

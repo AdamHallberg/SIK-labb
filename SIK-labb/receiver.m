@@ -2,13 +2,36 @@ function [zI,zQ,A,tau] = receiver(y)
 %%  Constants
 L  = length(y);                 % Antal punkter i indatan
 fs = 400e3;                     % Samplingsfrekvens
-T  = 1/fs;                      % Periodtid 
-t  = T*[0:L-1];                 % Tidsintervall det samplas över
+T  = 1/fs;                      % Periodtid
+T0 = 1/20000;
+%%  Determine A and tau
+Length = 20*100000;
+tc = T0*[0:Length-1];
+
+known_chirp = chirp(tc,140e3,Length,160e3)';
+
+known_chirp = [known_chirp;zeros(length(y)-length(known_chirp),1)];
+size(known_chirp)
+size(y)
+
+[~, i0] = max(xcorr(known_chirp))            % Gives index for peak in known chirp 
+
+[~, i1] = max(xcorr(known_chirp, y))            % Gives index for peak in known chirp
+
+added_samples = abs(i1-i0)
+tau = T*added_samples;
+A   = norm(y(added_samples+1:added_samples+Length))/norm(known_chirp);
+
+y = y(added_samples+1:end);
+
 %%  De-modulate 
+t  = T*[0:length(y)-1];                 % Tidsintervall det samplas över
+
 fc = 150e3;                       % Bärfrekvensen
 carrierI = 2*cos(2*pi*fc*t).';    % I carrier
 carrierQ = -2*sin(2*pi*fc*t).';   % Q carrier
 
+size(carrierQ)
 yI = y.*carrierI;
 yQ = y.*carrierQ;
 
@@ -29,7 +52,7 @@ yQ2 = yQ2(N/2+1:end);
 %% Down-sample
 % Constants
 M   = 20;                       % Nedsamplingsfaktor
-L   = L*M;                      % Nytt antal punkter
+L   = L/M;                      % Nytt antal punkter
 T2  = T/M;                      % Ny periodtid
 
 
@@ -37,7 +60,4 @@ T2  = T/M;                      % Ny periodtid
 zI  = downsample(yI2,M);        % zI nedsamplad yI2
 zQ  = downsample(yQ2,M);        % zQ nedsamplad yQ2
 
-%%  Determine A and tau...
-A   = 1;
-tau = 1;
 end

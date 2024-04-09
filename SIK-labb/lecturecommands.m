@@ -3,7 +3,7 @@ close all          % Stäng alla figurfönster
 clc                % Rensa Command Window
 
 %% I tidsled
-[x,fs]=audioread("x.wav");
+[x,fs] = audioread("matlab/xI.wav"); 
 Ts=1/fs;           % Sampelperiod
 L=length(x);
 t=Ts*[0:L-1];
@@ -81,3 +81,7 @@ hold off
 Z2=abs(fft(z2));
 figure
 plot(f2,Z2)
+
+%% Filtrera signalen i frekvensled
+
+
