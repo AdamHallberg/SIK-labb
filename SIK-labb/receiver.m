@@ -12,15 +12,16 @@ known_chirp = chirp(tc,140e3,Length,160e3)';  % samma som i sender
 
 known_chirp = [known_chirp;zeros(length(y)-length(known_chirp),1)];
 
-[~, i0] = max(xcorr(known_chirp))            % Gives index for peak in known chirp 
+[~, i0] = max(xcorr(known_chirp));            % Gives index for peak in known chirp 
 
-[~, i1] = max(xcorr(y, known_chirp))            % Gives index for peak in known chirp
+[~, i1] = max(xcorr(y, known_chirp));            % Gives index for peak in known chirp
 
-added_samples = abs(i1-i0)
+added_samples = abs(i1-i0);
 tau = T*added_samples;
 A   = norm(y(added_samples+1:added_samples+Length))/norm(known_chirp);
 
-y = y(added_samples+1:end);
+%%  Adjust in-signal
+y = (1/A)*y(added_samples + Length + 1:end);
 
 %%  De-modulate 
 t  = T*[0:length(y)-1];                 % Tidsintervall det samplas över
@@ -29,7 +30,6 @@ fc = 150e3;                       % Bärfrekvensen
 carrierI = 2*cos(2*pi*fc*t).';    % I carrier
 carrierQ = -2*sin(2*pi*fc*t).';   % Q carrier
 
-size(carrierQ)
 yI = y.*carrierI;
 yQ = y.*carrierQ;
 
