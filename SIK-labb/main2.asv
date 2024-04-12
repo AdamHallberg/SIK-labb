@@ -1,0 +1,39 @@
+close all
+clear
+clc
+%%  Read data
+[xI,fsI] = audioread("matlab/xI.wav"); 
+[xQ,fsQ] = audioread("matlab/xQ.wav"); 
+fs = fsI;                       % fsQ= fsI (always in our case)
+Ts = 1/fs;                      % Sampelperiod
+L = length(xI);
+t = Ts*[0:L-1];
+
+known_chirp = chirp(t,140e3,length(xI),160e3)';
+%%  Sender sends data
+x = sender(m, m);
+
+%%  Chanel transmitt data
+y = dummychannel(x, 2, 1000e3);  
+%disp("  >>  Chanel received data.")
+%%  Receiver receve data
+[zI,zQ,A,tau] = receiver(y);
+
+%% Compare results
+
+%fs = fsI;                       % fsQ= fsI (always in our case)
+disp("A   = " + A)
+disp("Tau = " + tau)
+
+%x0 = xI + xQ;
+x0 = known_chirp;
+z = zI + zQ;
+
+
+
+
+SNRz  = 20*log10(norm(x0)/norm(z-x0))
+
+
+%disp("  >>  SNRz = " + SNRz)
+%plot(f,X)
