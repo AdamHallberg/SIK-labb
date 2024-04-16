@@ -1,7 +1,6 @@
 close all
 clear
 clc
-
 %%  Read data
 [xI,fsI] = audioread("matlab/xI.wav"); 
 [xQ,fsQ] = audioread("matlab/xQ.wav"); 
@@ -10,16 +9,13 @@ clc
 x = sender(xI, xQ);
 
 %%  Chanel transmitt data
-y = dummychannel(x, -2, 190e3, 10);  % 1711e3 ger krash
-%y = TSKS10channel(x);
-%y = tmpChannel(x);
+y = TSKS10channel(x);
 
 %%  Receiver receve data
 [zI,zQ,A,tau] = receiver(y);
 
 
 %% Compare results
-
 disp("---------------------------")
 disp("  >>  Resultat:")
 disp("  >>  A     = " + A)
